@@ -1,0 +1,1 @@
+-s_srs EPSG:4326 -t_srs "+proj=aea +lat_1=35 +lat_2=5 +lat_0=20 +lon_0=145 +x_0=0 +y_0=0 +datum=WGS84 +units=m +no_defs -r cubicspline"

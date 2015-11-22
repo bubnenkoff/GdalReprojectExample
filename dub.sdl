@@ -1,0 +1,4 @@
+name "gdalwarpreproj"
+description "A minimal D application."
+copyright "Copyright © 2015, bubenkov_di"
+authors "bubenkov_di"
