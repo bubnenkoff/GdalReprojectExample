@@ -12,6 +12,7 @@ void main()
 {
 	string gdalfolder = which("gdalwarp.exe"); //return folder that consist gdalwarp.exe file
 	string example = buildPath(getcwd, "images\\example.jpg");
+
 	//writeln("example img path: ", example);
 	//writeln;
 	//writeln("cwd: ", getcwd());
@@ -49,6 +50,7 @@ void main()
 	{
 
 		string gdalfolder = which("gdalwarp.exe"); //return folder that consist gdalwarp.exe file
+		string gdalpluginpath = (gdalfolder ~ `gdal\plugins\`); //for JP2 support
 			
 			// before calling we should set PATH to current CMD session like: SET PATH=%PATH%;
 			// GDAL_DATA Need to be specified too! --> GDAL\gdal-data
@@ -94,14 +96,12 @@ void main()
 		}
 
 			string projParamsFileContent = proj_params_gdal_translate.readText();
-			writeln("proj_params_gdal_translate:");
 			writeln("--------------------------------");
-			writeln(proj_params_gdal_translate);
+			writeln("proj_params_gdal_translate: ", proj_params_gdal_translate);
 			writeln("--------------------------------");
-			writeln("gdal_warp_params_content:");
+			writeln("gdal_warp_params_content: ", gdal_warp_params_content);
 			writeln("--------------------------------");
-			writeln(gdal_warp_params_content);
-			writeln("--------------------------------");
+
 
 			File file = File(pointFile, "r"); 
 			string contentWithGsp = to!string(file.byLine.map!(a => "-gcp " ~ a ~ " ").joiner);
@@ -124,7 +124,7 @@ void main()
 
 
 				//FIXME need ability to specified other file types. 
-				string gdal_translate_string_for_cmd = `"` ~ gdalFullPath  ~ `" --config GDAL_DATA "` ~ gdal_data_folder ~ `" ` ~ projParamsFileContent  ~ " " ~ contentWithGsp ~ " " ~ imageFullName ~ " " ~ outputImageName_temp; 
+				string gdal_translate_string_for_cmd = `"` ~ gdalFullPath  ~ `" -of JP2OpenJPEG --config GDAL_DATA "` ~ gdal_data_folder ~ `" ` ~ projParamsFileContent  ~ " " ~ contentWithGsp ~ " " ~ imageFullName ~ " " ~ outputImageName_temp; 
 
 				writeln(gdal_translate_string_for_cmd);
 				writeln;
@@ -149,6 +149,8 @@ void main()
 				D:\code\GdalReprojectExample\GDAL\gdalwarp.exe -t_srs "+proj=longlat +ellps=WGS84" D:\code\GdalReprojectExample\images\example_reproj.jpg D:\code\GdalReprojectExample\images\output.jpg
 				*/
 				
+				auto gdal_plugin_Pid = spawnShell(`SET PATH = "` ~ gdalpluginpath ~ `"`); //JP2 support
+
 				//GDAL Translate start
 				auto gdal_translate_Pid = spawnShell(gdal_translate_string_for_cmd);
 				if(wait(gdal_translate_Pid) !=0)

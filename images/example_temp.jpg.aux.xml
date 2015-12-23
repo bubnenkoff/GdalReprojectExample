@@ -1,0 +1,17 @@
+<PAMDataset>
+  <Metadata domain="IMAGE_STRUCTURE">
+    <MDI key="INTERLEAVE">PIXEL</MDI>
+  </Metadata>
+  <Metadata>
+    <MDI key="EXIF_ResolutionUnit">2</MDI>
+    <MDI key="EXIF_Software">paint.net 4.0.6</MDI>
+    <MDI key="EXIF_XResolution">(120)</MDI>
+    <MDI key="EXIF_YResolution">(120)</MDI>
+  </Metadata>
+  <GCPList Projection="PROJCS[&quot;WGS 84 / NSIDC Sea Ice Polar Stereographic North&quot;,GEOGCS[&quot;WGS 84&quot;,DATUM[&quot;WGS_1984&quot;,SPHEROID[&quot;WGS 84&quot;,6378137,298.257223563,AUTHORITY[&quot;EPSG&quot;,&quot;7030&quot;]],AUTHORITY[&quot;EPSG&quot;,&quot;6326&quot;]],PRIMEM[&quot;Greenwich&quot;,0,AUTHORITY[&quot;EPSG&quot;,&quot;8901&quot;]],UNIT[&quot;degree&quot;,0.0174532925199433,AUTHORITY[&quot;EPSG&quot;,&quot;9122&quot;]],AUTHORITY[&quot;EPSG&quot;,&quot;4326&quot;]],PROJECTION[&quot;Polar_Stereographic&quot;],PARAMETER[&quot;latitude_of_origin&quot;,70],PARAMETER[&quot;central_meridian&quot;,-45],PARAMETER[&quot;scale_factor&quot;,1],PARAMETER[&quot;false_easting&quot;,0],PARAMETER[&quot;false_northing&quot;,0],UNIT[&quot;metre&quot;,1,AUTHORITY[&quot;EPSG&quot;,&quot;9001&quot;]],AXIS[&quot;X&quot;,EAST],AXIS[&quot;Y&quot;,NORTH],AUTHORITY[&quot;EPSG&quot;,&quot;3413&quot;]]">
+    <GCP Id="" Pixel="529.4223" Line="224.2209" X="1.920014070000E+006" Y="2.288183665000E+006" />
+    <GCP Id="" Pixel="276.5955" Line="179.5073" X="2.586827958000E+006" Y="1.493505818000E+006" />
+    <GCP Id="" Pixel="149.2630" Line="528.2941" X="3.876554401000E+006" Y="2.238129727000E+006" />
+    <GCP Id="" Pixel="529.3787" Line="594.5474" X="2.877284115000E+006" Y="3.429013681000E+006" />
+  </GCPList>
+</PAMDataset>
