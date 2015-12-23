@@ -75,15 +75,15 @@ D:\code\GdalWarpReproj\test\20151012.0000.multisat.ir.stitched.Global.x.jpg D:\c
 
 			string gdalFullPath = buildPath(gdalfolder, `gdal_translate.exe`);
 
-		bool reprojectToWGS84 = false;	
+		bool is_gdal_warp_params = false;	
 
 		//every folder with images should have subfolder "data"
 		//that should include file named "points.txt"
 		string pointFile = buildPath(imageFullName.dirName, "data", "points.txt");
-		string projParamsFileName = buildPath(imageFullName.dirName, "data", "proj_params.txt");
-		string projParamsWgs84FileName = buildPath(imageFullName.dirName, "data", "proj_params_wgs84.txt"); //for final reprojection
+		string proj_params_gdal_translate = buildPath(imageFullName.dirName, "data", "proj_params_gdal_translate.txt");
+		string proj_params_gdalwarp = buildPath(imageFullName.dirName, "data", "proj_params_gdalwarp.txt"); //for final reprojection
 
-		string projParamsWGS84FileContent;
+		string gdal_warp_params_content;
 
 		if(!pointFile.exists)
 		{
@@ -91,58 +91,66 @@ D:\code\GdalWarpReproj\test\20151012.0000.multisat.ir.stitched.Global.x.jpg D:\c
 			readln;
 		}
 
-		if(!projParamsFileName.exists)
+		if(!proj_params_gdal_translate.exists)
 		{
 			writeln("Folder do not have data/proj_params.txt. This file is require for reprojecting");
 			readln;
 		}
 
-		if(projParamsWgs84FileName.exists) // WGS84 transformation final. If EXISTS!
+		if(proj_params_gdalwarp.exists) // WGS84 transformation final. If EXISTS!
 		{
-			reprojectToWGS84 = true;
-			projParamsWGS84FileContent = projParamsWgs84FileName.readText();
+			is_gdal_warp_params = true;
+			gdal_warp_params_content = proj_params_gdalwarp.readText();
 		}
 
-			string projParamsFileContent = projParamsFileName.readText();
+			string projParamsFileContent = proj_params_gdal_translate.readText();
+			writeln("proj_params_gdal_translate:");
+			writeln("--------------------------------");
+			writeln(proj_params_gdal_translate);
+			writeln("--------------------------------");
+			writeln("gdal_warp_params_content:");
+			writeln("--------------------------------");
+			writeln(gdal_warp_params_content);
+			writeln("--------------------------------");
 
 			File file = File(pointFile, "r"); 
 			string contentWithGsp = to!string(file.byLine.map!(a => "-gcp " ~ a ~ " ").joiner);
 			//writeln(contentWithGsp);
 
-				if (imageFullName.getSize/1024 < 100) //if image less then 100KB than skip it
+				if (imageFullName.getSize/1024 < 30) //if image less then 30KB than skip it
 					imageFullName.remove;
 
 				// adding for FullImageName _reproj postfix, temp for 
-				string outputImageName_temp = to!string(imageFullName).stripExtension ~ "_temp" ~ to!string(imageFullName).extension;
-				string outputImageName_reproj = to!string(imageFullName).stripExtension ~ "_reproj" ~ to!string(imageFullName).extension;
+				string outputImageName_temp = to!string(imageFullName).stripExtension ~ "_temp" ~ (to!string(imageFullName).extension).replace("jpg","jpg");
+				string outputImageName_reproj = to!string(imageFullName).stripExtension ~ "_reproj" ~ (to!string(imageFullName).extension).replace("jpg","jpg");
 
 				string currentImageExtension = (to!string(imageFullName).extension).replace(".","").toUpper; // it's should be passed as argiment bellow
 				// if extension "jpg" it's should be renamed to "JPEG"
 				// FIXME: need to add check other extension, for example for geotiff
 
 				if (currentImageExtension == "JPG")
-					currentImageExtension = currentImageExtension.replace("JPG", "JPEG");
+					currentImageExtension = currentImageExtension.replace("JPG", "JP2");
 				writeln(currentImageExtension);
 
 
 				//FIXME need ability to specified other file types. 
-				string gdal_translate_string_for_cmd = `"` ~ gdalFullPath  ~ `" --config GDAL_DATA "` ~ gdal_data_folder ~ `"` ~ ` -of ` ~ currentImageExtension ~ " " ~ contentWithGsp ~ " " ~ imageFullName ~ " " ~ outputImageName_temp; 
+				string gdal_translate_string_for_cmd = `"` ~ gdalFullPath  ~ `" --config GDAL_DATA "` ~ gdal_data_folder ~ `" ` ~ projParamsFileContent  ~ " " ~ contentWithGsp ~ " " ~ imageFullName ~ " " ~ outputImageName_temp; 
 
-				//writeln(gdal_translate_string_for_cmd);
-				//writeln;
-				string gdalwarp_command_for_cmd = `"` ~ buildPath(gdalfolder, "gdalwarp.exe") ~ `"` ~ ` --config GDAL_DATA "` ~ gdal_data_folder ~ `" ` ~ projParamsFileContent ~ " " ~ outputImageName_temp ~ " " ~ outputImageName_reproj ~ " -order 3";
+				writeln(gdal_translate_string_for_cmd);
+				writeln;
+				string gdalwarp_command_for_cmd = `"` ~ buildPath(gdalfolder, "gdalwarp.exe") ~ `"` ~ ` --config GDAL_DATA "` ~ gdal_data_folder ~ `" ` ~ gdal_warp_params_content ~ " " ~ outputImageName_temp ~ " " ~ outputImageName_reproj ~ " -order 1";
 				writeln;
 				writeln(gdalwarp_command_for_cmd);
 				writeln;
 				readln;
 
 				string gdalwarp_command_WGS84_for_cmd;
-				if(reprojectToWGS84)
+				if(is_gdal_warp_params)
 				{
-					gdalwarp_command_WGS84_for_cmd = `"` ~ buildPath(gdalfolder, "gdalwarp.exe") ~ `" ` ~ projParamsWGS84FileContent ~ " " ~ outputImageName_reproj ~ " " ~ outputImageName_reproj.replace("_reproj", "_reproj_WGS84");
+					gdalwarp_command_WGS84_for_cmd = `"` ~ buildPath(gdalfolder, "gdalwarp.exe") ~ `"` ~ ` --config GDAL_DATA "` ~ gdal_data_folder ~ `" ` ~ gdal_warp_params_content ~ " " ~ outputImageName_reproj ~ " " ~ outputImageName_reproj.replace("_reproj", "_reproj_WGS84");
 					writeln(gdalwarp_command_WGS84_for_cmd);
 				}
-				//projParamsWGS84FileContent
+				//gdal_warp_params_content
 				
 				// we should use spawnShell because it use
 				// rules about command structure, argument/filename quoting and escaping of special characters
@@ -170,7 +178,7 @@ D:\code\GdalWarpReproj\test\20151012.0000.multisat.ir.stitched.Global.x.jpg D:\c
 				}
 
 				//GDAL warp for translate from local coordinat to WGS84 (last step)
-				if(reprojectToWGS84)
+				if(is_gdal_warp_params)
 				{
 					auto gdal_warp_Pid_WGS84 = spawnShell(gdalwarp_command_WGS84_for_cmd);
 					if(wait(gdal_warp_Pid_WGS84) !=0)
@@ -182,8 +190,9 @@ D:\code\GdalWarpReproj\test\20151012.0000.multisat.ir.stitched.Global.x.jpg D:\c
 				}
 
 				//now we should remove "_temp" images
-				outputImageName_temp.remove;
-				(outputImageName_temp ~ ".aux.xml").remove;
+
+					//outputImageName_temp.remove;
+					//(outputImageName_temp ~ ".aux.xml").remove;
 
 				//remove originals
 				//imageFullName.remove;
