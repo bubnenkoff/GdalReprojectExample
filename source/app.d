@@ -32,26 +32,16 @@ void main()
 
 /* Example of manual calling:
 
-"C:\Program Files (x86)\GDAL\gdal_translate.exe" --config GDAL_DATA "C:\Program Files (x86)\GDAL\gdal-data" -of JPEG ^
--gcp 609.379425 715.418998 -57.807336 -51.682874 ^
--gcp 298.566685 214.554344 -119.989166 29.990432 ^
--gcp 448.665859 29.746925 -90.013676 60.009832 ^
--gcp 1701.491957 16.627166 160.332297 61.932027 ^
--gcp 1648.377555 399.601398 150.005315 0.001500 ^
--gcp 1499.114107 214.648079 120.002269 30.017098 ^
--gcp 1059.517674 182.404592 32.292795 35.065381 ^
--gcp 899.988711 214.936138 0.036211 30.004496 ^
--gcp 899.945721 398.018136 0.000926 0.001867 ^
--gcp 149.345029 768.745707 -150.009238 -59.992892 ^
--gcp 49.086449 582.265595 -169.974976 -29.993605 ^
--gcp 1348.177466 29.815091 90.002152 60.003958 ^
--gcp 1648.494330 215.373824 149.992562 30.003650 ^
--gcp 1748.976811 216.240451 170.016828 29.994199 ^
--gcp 1499.521371 768.927413 119.988446 -59.993457 ^
--gcp 1648.287924 766.928166 150.033080 -59.993457 ^
-D:\code\GdalWarpReproj\test\20151012.0000.multisat.ir.stitched.Global.x.jpg D:\code\GdalWarpReproj\test\ready\output.jpg
+..\gdal\gdal_translate -a_srs EPSG:3413 201512202100-00.png 201512202100-00.tif --config GDAL_DATA ..\gdal\gdal-data ^
+-gcp 529.42231841 224.22090981 1920014.070 2288183.665 ^
+-gcp 276.59548166 179.50734792 2586827.958 1493505.818 ^
+-gcp 149.26295228 528.29412763 3876554.401 2238129.727 ^
+-gcp 529.37873987 594.54737286 2877284.115 3429013.681 
+..\gdal\gdalinfo 201512202100-00.tif
+@..\gdal\gdalwarp --config GDAL_DATA ..\gdal\gdal-data -t_srs EPSG:3857 201512202100-00.tif output.jp2
 
-"C:\Program Files (x86)\GDAL\gdalwarp.exe" --config GDAL_DATA "C:\Program Files (x86)\GDAL\gdal-data" -s_srs EPSG:4326 -t_srs '+proj=aea +lat_1=35 +lat_2=5 +lat_0=20 +lon_0=145 +x_0=0 +y_0=0 +datum=WGS84 +units=m +no_defs' -r cubicspline D:\code\GdalWarpReproj\test\ready\output.jpg D:\code\GdalWarpReproj\test\ready\1_proj.jpg -order 3	
+
+
 
 */
 
